@@ -1,7 +1,6 @@
-import Header from '@/components/header'
+import Header from '@/components/Header'
 import { Button } from '@/components/ui/button'
 import WalletCard from '@/components/Wallet'
-import React from 'react'
 
 const Homepage = () => {
   return (

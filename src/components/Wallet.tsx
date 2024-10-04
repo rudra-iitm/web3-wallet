@@ -14,15 +14,15 @@ const WalletCard = () => {
     const [mnemonic, setMnemonic] = useState("");
     const { toast } = useToast()
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [publicKeys, setPublicKeys] = useState([]);
-    const [secretKeys, setSecretKeys] = useState([]);
+    const [publicKeys, setPublicKeys] = useState<Keypair['publicKey'][]>([]);
+    const [secretKeys, setSecretKeys] = useState<Uint8Array[]>([]);
     const CustomDescription = ({mn} : {mn: string}) => {
         const words = mn.split(" ");
         return (
             <div>
                 <div className="grid grid-cols-4">
-                    {words.map((word) => (
-                    <Card className='px-2 py-1 mx-2 my-1 flex justify-center items-center'>
+                    {words.map((word, index) => (
+                    <Card key={index} className='px-2 py-1 mx-2 my-1 flex justify-center items-center'>
                         <CardDescription>{word}</CardDescription>
                     </Card>
                     ))}
@@ -57,7 +57,7 @@ const WalletCard = () => {
                             title: "Save the Mnemonic",
                             description: <CustomDescription mn={mn} />,
                         })
-                        const seed = mnemonicToSeed(mnemonic);
+                        const seed = await mnemonicToSeed(mnemonic);
                         const path = `m/44'/501'/${currentIndex}'/0'`;
                         const derivedSeed = derivePath(path, seed.toString("hex")).key;
                         const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
@@ -71,7 +71,7 @@ const WalletCard = () => {
                 </Button>
         </CardHeader>
     <CardContent>
-        {publicKeys.map(p => <div>
+        {publicKeys.map((p, index) => <div key={index}>
             <BalanceCard publicKey={p.toBase58()} />
             </div>)}
     </CardContent>
